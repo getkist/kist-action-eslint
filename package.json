@@ -1,0 +1,77 @@
+{
+  "name": "@getkist/action-eslint",
+  "version": "1.0.0",
+  "description": "ESLint linting actions for kist",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "keywords": [
+    "kist",
+    "kist-action",
+    "eslint",
+    "lint",
+    "linter",
+    "typescript",
+    "javascript"
+  ],
+  "author": "kist",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/getkist/kist-action-eslint.git"
+  },
+  "bugs": {
+    "url": "https://github.com/getkist/kist-action-eslint/issues"
+  },
+  "homepage": "https://github.com/getkist/kist-action-eslint#readme",
+  "engines": {
+    "node": ">=20.0.0",
+    "npm": ">=10.0.0"
+  },
+  "scripts": {
+    "build": "tsc",
+    "build:watch": "tsc --watch",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:unit": "jest --testPathPatterns=\\.test\\.ts$",
+    "test:integration": "jest --testPathPatterns=\\.integration\\.test\\.ts$",
+    "lint": "eslint 'src/**/*.ts'",
+    "lint:fix": "eslint 'src/**/*.ts' --fix",
+    "format": "prettier --write 'src/**/*.ts'",
+    "docs": "typedoc",
+    "docs:watch": "typedoc --watch",
+    "clean": "rm -rf dist docs/api coverage",
+    "prepublishOnly": "npm run clean && npm run build && npm test"
+  },
+  "peerDependencies": {
+    "kist": ">=0.1.58"
+  },
+  "dependencies": {
+    "eslint": "^9.0.0"
+  },
+  "devDependencies": {
+    "@types/jest": "30.0.0",
+    "@types/node": "25.2.2",
+    "@typescript-eslint/eslint-plugin": "8.54.0",
+    "@typescript-eslint/parser": "8.54.0",
+    "jest": "30.2.0",
+    "ts-jest": "^29.4.6",
+    "typedoc": "^0.28.0",
+    "typedoc-plugin-markdown": "^4.10.0",
+    "typescript": "^5.9.3"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "sideEffects": false
+}
