@@ -2,15 +2,28 @@ cff-version: 1.2.0
 message: "If you use this software, please cite it as below."
 type: software
 title: "@getkist/action-eslint"
-version: 1.0.0
-abstract: "ESLint linting actions for kist"
+version: 1.0.1
+date-released: "2026-02-08"
+abstract: "ESLint linting actions for kist - A TypeScript-based build orchestration tool"
 authors:
-  - name: "kist"
+  - name: "kist contributors"
+    affiliation: "kist project"
 repository-code: "https://github.com/getkist/kist-action-eslint"
+url: "https://kist.js.org"
 license: MIT
 keywords:
   - kist
   - eslint
   - linting
+  - static-analysis
   - typescript
   - javascript
+  - code-quality
+  - build-tool
+references:
+  - type: software
+    title: "ESLint"
+    url: "https://eslint.org"
+  - type: software
+    title: "kist"
+    repository-code: "https://github.com/getkist/kist"
