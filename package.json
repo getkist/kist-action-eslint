@@ -1,14 +1,20 @@
 {
   "name": "@getkist/action-eslint",
-  "version": "1.0.5",
+  "version": "1.0.7",
   "description": "ESLint linting actions for kist",
-  "main": "dist/index.js",
+  "main": "./dist/index.cjs",
   "types": "dist/index.d.ts",
   "type": "module",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.cjs"
+      }
     },
     "./package.json": "./package.json"
   },
@@ -36,8 +42,8 @@
     "npm": ">=10.0.0"
   },
   "scripts": {
-    "build": "tsc",
-    "build:watch": "tsc --watch",
+    "build": "tsup",
+    "build:watch": "tsup --watch",
     "test": "NODE_OPTIONS='--experimental-vm-modules' jest",
     "test:watch": "NODE_OPTIONS='--experimental-vm-modules' jest --watch",
     "test:coverage": "NODE_OPTIONS='--experimental-vm-modules' jest --coverage",
@@ -66,12 +72,14 @@
     "ts-jest": "^29.4.6",
     "typedoc": "^0.28.0",
     "typedoc-plugin-markdown": "^4.10.0",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "tsup": "^8.5.1"
   },
   "files": [
     "dist",
     "README.md",
     "LICENSE"
   ],
-  "sideEffects": false
+  "sideEffects": false,
+  "module": "./dist/index.mjs"
 }
