@@ -1,13 +1,30 @@
+// ============================================================================
+// Export
+// ============================================================================
+
+export { LintAction } from "./actions/LintAction/index.js";
+export type { LintActionOptions } from "./actions/LintAction/index.js";
+export { Action, ActionPlugin } from "./types/Action.js";
+export type { ActionOptionsType } from "./types/Action.js";
+
+// ============================================================================
+// Plugin Definition
+// ============================================================================
+
 import { ActionPlugin } from "./types/Action.js";
 import { LintAction } from "./actions/LintAction/index.js";
 
 const plugin: ActionPlugin = {
-    name: "@getkist/action-eslint",
     version: "1.0.0",
-    actions: { LintAction },
+    description: "ESLint integration for kist",
+    author: "kist",
+    repository: "https://github.com/getkist/kist-action-eslint",
+    keywords: ["kist", "kist-action", "eslint", "lint"],
+    registerActions() {
+        return {
+            LintAction,
+        };
+    },
 };
 
 export default plugin;
-export type { LintActionOptions } from "./actions/LintAction/index.js";
-export { LintAction };
-export { Action, ActionPlugin, ActionOptionsType } from "./types/Action.js";

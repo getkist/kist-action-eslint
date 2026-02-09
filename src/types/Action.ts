@@ -77,9 +77,19 @@ export abstract class Action<T extends ActionOptionsType = ActionOptionsType> {
  */
 export interface ActionPlugin {
     /** Plugin name */
-    name: string;
+    name?: string;
     /** Plugin version */
     version: string;
+    /** Plugin description */
+    description?: string;
+    /** Plugin author */
+    author?: string;
+    /** Repository URL */
+    repository?: string;
+    /** Keywords */
+    keywords?: string[];
     /** Map of action names to action classes */
-    actions: Record<string, new () => Action>;
+    actions?: Record<string, new () => Action>;
+    /** Register actions method */
+    registerActions?: () => Record<string, new () => Action>;
 }
