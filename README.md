@@ -57,7 +57,7 @@ Runs ESLint on specified files and directories, with optional auto-fixing.
 #### Options
 
 | Option | Type | Default | Description |
-|--------|------|---------|-------------|
+| -------- | ------ | --------- | ------------- |
 | `targetFiles` | `string[]` | `["src/**/*.ts"]` | Files or glob patterns to lint |
 | `fix` | `boolean` | `false` | Whether to automatically fix issues |
 | `configPath` | `string` | `"eslint.config.js"` | Path to ESLint config file |
