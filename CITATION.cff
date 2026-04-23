@@ -2,8 +2,8 @@ cff-version: 1.2.0
 message: "If you use this software, please cite it as below."
 type: software
 title: "@getkist/action-eslint"
-version: 1.0.1
-date-released: "2026-02-08"
+version: 1.0.9
+date-released: 2026-04-23
 abstract: "ESLint linting actions for kist - A TypeScript-based build orchestration tool"
 authors:
   - name: "kist contributors"
