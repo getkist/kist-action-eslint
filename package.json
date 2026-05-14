@@ -1,6 +1,6 @@
 {
   "name": "@getkist/action-eslint",
-  "version": "1.0.22",
+  "version": "1.0.23",
   "description": "ESLint linting actions for kist",
   "main": "./dist/index.cjs",
   "types": "dist/index.d.ts",
@@ -61,18 +61,18 @@
     "kist": ">=0.1.58"
   },
   "dependencies": {
-    "eslint": "^9.0.0"
+    "eslint": "^10.3.0"
   },
   "devDependencies": {
     "@types/jest": "30.0.0",
-    "@types/node": "25.2.2",
-    "@typescript-eslint/eslint-plugin": "8.54.0",
-    "@typescript-eslint/parser": "8.54.0",
-    "jest": "30.2.0",
-    "ts-jest": "^29.4.6",
-    "typedoc": "^0.28.0",
-    "typedoc-plugin-markdown": "^4.10.0",
-    "typescript": "^5.9.3",
+    "@types/node": "25.8.0",
+    "@typescript-eslint/eslint-plugin": "8.59.3",
+    "@typescript-eslint/parser": "8.59.3",
+    "jest": "30.4.2",
+    "ts-jest": "^29.4.9",
+    "typedoc": "^0.28.19",
+    "typedoc-plugin-markdown": "^4.11.0",
+    "typescript": "^6.0.3",
     "tsup": "^8.5.1"
   },
   "files": [
