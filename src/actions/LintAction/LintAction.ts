@@ -10,14 +10,28 @@ import { Action, ActionOptionsType } from "../../types/Action.js";
 // ============================================================================
 
 /**
- * Options for the LintAction
+ * Options for the LintAction. All fields are optional; omitted fields fall
+ * back to the defaults documented below and are resolved inside
+ * {@link LintAction.execute}, not at the type level.
+ *
+ * @example
+ * ```yaml
+ * steps:
+ *   - action: LintAction
+ *     options:
+ *       targetFiles:
+ *         - "src/**\/*.ts"
+ *         - "tst/**\/*.ts"
+ *       fix: true
+ *       configPath: "eslint.config.js"
+ * ```
  */
 export interface LintActionOptions extends ActionOptionsType {
-    /** Files or glob patterns to lint (default: src ts files) */
+    /** Files or glob patterns to lint (default: ["src/**\/*.ts"]) */
     targetFiles?: string[];
-    /** Whether to automatically fix issues (default: false) */
+    /** Whether to automatically apply ESLint's suggested fixes to disk before reporting results (default: false) */
     fix?: boolean;
-    /** Path to ESLint config file (default: eslint.config.js) */
+    /** Path to the ESLint flat config file used to override the resolved configuration (default: "eslint.config.js") */
     configPath?: string;
 }
 
@@ -30,6 +44,13 @@ export interface LintActionOptions extends ActionOptionsType {
  * This action can be configured to run in strict mode or automatically fix issues.
  */
 export class LintAction extends Action<LintActionOptions> {
+    /**
+     * The ESLint instance used to lint files. A placeholder instance is
+     * created in the constructor and then replaced in {@link execute} once
+     * the resolved `fix` and `configPath` options are known, since ESLint's
+     * configuration (fix mode, config file override) can only be set at
+     * construction time.
+     */
     private eslint: ESLint;
 
     constructor() {
@@ -38,10 +59,15 @@ export class LintAction extends Action<LintActionOptions> {
     }
 
     /**
-     * Validates the action options.
+     * Validates the action options before linting begins. Only checks
+     * fields that are present, since every option is optional; a missing
+     * field is always considered valid because {@link execute} substitutes
+     * its default. On failure, the specific validation error is reported
+     * via {@link Action.logError} rather than thrown, so callers must check
+     * the return value.
      *
      * @param options - The options to validate.
-     * @returns True if options are valid.
+     * @returns True if `targetFiles`, `fix`, and `configPath` (when present) all have the expected type/shape; false otherwise.
      */
     validateOptions(options: LintActionOptions): boolean {
         if (options.targetFiles !== undefined) {
@@ -66,11 +92,18 @@ export class LintAction extends Action<LintActionOptions> {
     }
 
     /**
-     * Executes the ESLint linting action.
+     * Executes the ESLint linting action: resolves defaults, rebuilds the
+     * {@link eslint} instance with the requested `fix`/`configPath` options,
+     * lints `targetFiles`, optionally writes auto-fixes back to disk, prints
+     * a "stylish"-formatted report to stdout, and logs a summary. This
+     * method never rejects with the underlying error count — a non-zero
+     * error/warning count is only logged, not thrown; only unexpected
+     * failures (e.g. an invalid config file, a crash inside ESLint) reject
+     * the returned Promise.
      *
      * @param options - The options for linting.
-     * @returns A Promise that resolves when linting completes.
-     * @throws {Error} If linting encounters an error.
+     * @returns A Promise that resolves when linting completes, regardless of whether lint errors/warnings were found.
+     * @throws {Error} If `options` fail {@link validateOptions}, or if ESLint itself throws (e.g. an unreadable config file or invalid glob).
      */
     async execute(options: LintActionOptions): Promise<void> {
         if (!this.validateOptions(options)) {
