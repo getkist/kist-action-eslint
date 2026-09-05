@@ -27,7 +27,7 @@ import { LintAction } from "./actions/LintAction/index.js";
  * `LintAction` by name without importing the class directly.
  */
 const plugin: ActionPlugin = {
-    version: "1.0.26",
+    version: "1.0.27",
     description: "ESLint integration for kist",
     author: "kist",
     repository: "https://github.com/getkist/kist-action-eslint",

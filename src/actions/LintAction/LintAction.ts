@@ -31,8 +31,21 @@ export interface LintActionOptions extends ActionOptionsType {
     targetFiles?: string[];
     /** Whether to automatically apply ESLint's suggested fixes to disk before reporting results (default: false) */
     fix?: boolean;
-    /** Path to the ESLint flat config file used to override the resolved configuration (default: "eslint.config.js") */
+    /**
+     * Path to an ESLint flat config file that overrides the resolved
+     * configuration. Omit it — the default — to let ESLint discover the
+     * project's own config, which is the only way `eslint.config.mjs`,
+     * `.cjs` and `.ts` projects work.
+     */
     configPath?: string;
+    /**
+     * Whether lint errors fail the step (default: true).
+     *
+     * A lint step that cannot fail cannot gate anything, so errors stop the
+     * pipeline by default. Set this to false to report them and carry on.
+     * Warnings never fail the step either way.
+     */
+    failOnError?: boolean;
 }
 
 // ============================================================================
@@ -45,18 +58,16 @@ export interface LintActionOptions extends ActionOptionsType {
  */
 export class LintAction extends Action<LintActionOptions> {
     /**
-     * The ESLint instance used to lint files. A placeholder instance is
-     * created in the constructor and then replaced in {@link execute} once
-     * the resolved `fix` and `configPath` options are known, since ESLint's
-     * configuration (fix mode, config file override) can only be set at
-     * construction time.
+     * The ESLint instance used to lint files, built in {@link execute} once
+     * the resolved `fix` and `configPath` options are known — ESLint's
+     * configuration can only be set at construction time.
+     *
+     * Not created in the constructor: kist instantiates an action just to
+     * read its `name`, and building an ESLint instance resolves
+     * configuration, so the placeholder was real work done on every
+     * registration and then thrown away.
      */
-    private eslint: ESLint;
-
-    constructor() {
-        super();
-        this.eslint = new ESLint({});
-    }
+    private eslint?: ESLint;
 
     /**
      * Validates the action options before linting begins. Only checks
@@ -88,6 +99,10 @@ export class LintAction extends Action<LintActionOptions> {
             this.logError("Invalid options: 'configPath' must be a string.");
             return false;
         }
+        if (options.failOnError !== undefined && typeof options.failOnError !== "boolean") {
+            this.logError("Invalid options: 'failOnError' must be a boolean.");
+            return false;
+        }
         return true;
     }
 
@@ -95,15 +110,13 @@ export class LintAction extends Action<LintActionOptions> {
      * Executes the ESLint linting action: resolves defaults, rebuilds the
      * {@link eslint} instance with the requested `fix`/`configPath` options,
      * lints `targetFiles`, optionally writes auto-fixes back to disk, prints
-     * a "stylish"-formatted report to stdout, and logs a summary. This
-     * method never rejects with the underlying error count — a non-zero
-     * error/warning count is only logged, not thrown; only unexpected
-     * failures (e.g. an invalid config file, a crash inside ESLint) reject
-     * the returned Promise.
+     * a "stylish"-formatted report to stdout, and logs a summary. Lint
+     * errors reject the returned Promise unless `failOnError` is set to
+     * false; warnings never do.
      *
      * @param options - The options for linting.
-     * @returns A Promise that resolves when linting completes, regardless of whether lint errors/warnings were found.
-     * @throws {Error} If `options` fail {@link validateOptions}, or if ESLint itself throws (e.g. an unreadable config file or invalid glob).
+     * @returns A Promise that resolves when linting completes without errors, or with errors when `failOnError` is false.
+     * @throws {Error} If `options` fail {@link validateOptions}, if ESLint itself throws (e.g. an unreadable config file or invalid glob), or if lint errors were found and `failOnError` is left at its default.
      */
     async execute(options: LintActionOptions): Promise<void> {
         if (!this.validateOptions(options)) {
@@ -113,14 +126,26 @@ export class LintAction extends Action<LintActionOptions> {
         const {
             targetFiles = ["src/**/*.ts"],
             fix = false,
-            configPath = "eslint.config.js",
+            configPath,
+            failOnError = true,
         } = options;
 
         this.logInfo(`Starting ESLint on: ${targetFiles.join(", ")}`);
 
+        // Set inside the try, acted on after it, so a lint failure is not
+        // caught and re-reported as "ESLint encountered an error".
+        let lintFailure: string | undefined;
+
         try {
-            // Update ESLint instance with correct configuration
-            this.eslint = new ESLint({ fix, overrideConfigFile: configPath });
+            // `overrideConfigFile` is only passed when the caller named one.
+            // It used to default to "eslint.config.js", which ESLint reads as
+            // an explicit path and fails on when absent — so every project
+            // using eslint.config.mjs, .cjs or .ts could not run this action
+            // at all.
+            this.eslint = new ESLint({
+                fix,
+                ...(configPath ? { overrideConfigFile: configPath } : {}),
+            });
             const results = await this.eslint.lintFiles(targetFiles);
 
             if (fix) {
@@ -140,7 +165,16 @@ export class LintAction extends Action<LintActionOptions> {
             }
 
             if (errorCount > 0) {
-                this.logWarning(`ESLint found ${errorCount} error(s) and ${warningCount} warning(s).`);
+                const summary = `ESLint found ${errorCount} error(s) and ${warningCount} warning(s).`;
+                // Recorded rather than thrown here so the pipeline halts on
+                // it below. Merely logging it let a build with lint errors
+                // finish green, which is the one thing a lint step exists to
+                // prevent.
+                if (failOnError) {
+                    lintFailure = summary;
+                } else {
+                    this.logWarning(summary);
+                }
             } else if (warningCount > 0) {
                 this.logInfo(`ESLint completed with ${warningCount} warning(s).`);
             } else {
@@ -149,6 +183,11 @@ export class LintAction extends Action<LintActionOptions> {
         } catch (error) {
             this.logError("ESLint encountered an error.", error);
             throw error;
+        }
+
+        if (lintFailure) {
+            this.logError(lintFailure);
+            throw new Error(lintFailure);
         }
     }
 

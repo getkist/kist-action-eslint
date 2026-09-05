@@ -1,87 +1,93 @@
 {
-  "name": "@getkist/action-eslint",
-  "version": "1.0.26",
-  "description": "ESLint linting actions for kist",
-  "main": "./dist/index.cjs",
-  "types": "dist/index.d.ts",
-  "type": "module",
-  "exports": {
-    ".": {
-      "import": {
-        "types": "./dist/index.d.ts",
-        "default": "./dist/index.mjs"
-      },
-      "require": {
-        "types": "./dist/index.d.ts",
-        "default": "./dist/index.cjs"
-      }
+    "name": "@getkist/action-eslint",
+    "version": "1.0.27",
+    "description": "ESLint linting actions for kist",
+    "main": "./dist/index.cjs",
+    "types": "dist/index.d.ts",
+    "type": "module",
+    "exports": {
+        ".": {
+            "import": {
+                "types": "./dist/index.d.ts",
+                "default": "./dist/index.mjs"
+            },
+            "require": {
+                "types": "./dist/index.d.ts",
+                "default": "./dist/index.cjs"
+            }
+        },
+        "./package.json": "./package.json"
     },
-    "./package.json": "./package.json"
-  },
-  "keywords": [
-    "kist",
-    "kist-action",
-    "eslint",
-    "lint",
-    "linter",
-    "typescript",
-    "javascript"
-  ],
-  "author": "kist",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/getkist/kist-action-eslint.git"
-  },
-  "bugs": {
-    "url": "https://github.com/getkist/kist-action-eslint/issues"
-  },
-  "homepage": "https://github.com/getkist/kist-action-eslint#readme",
-  "engines": {
-    "node": ">=22.0.0",
-    "npm": ">=10.0.0"
-  },
-  "scripts": {
-    "build": "tsup",
-    "build:watch": "tsup --watch",
-    "test": "NODE_OPTIONS='--experimental-vm-modules' jest",
-    "test:watch": "NODE_OPTIONS='--experimental-vm-modules' jest --watch",
-    "test:coverage": "NODE_OPTIONS='--experimental-vm-modules' jest --coverage",
-    "test:unit": "NODE_OPTIONS='--experimental-vm-modules' jest --testPathPatterns=\\.test\\.ts$",
-    "test:integration": "NODE_OPTIONS='--experimental-vm-modules' jest --testPathPatterns=\\.integration\\.test\\.ts$",
-    "lint": "eslint 'src/**/*.ts'",
-    "lint:fix": "eslint 'src/**/*.ts' --fix",
-    "format": "prettier --write 'src/**/*.ts'",
-    "docs": "typedoc",
-    "docs:watch": "typedoc --watch",
-    "clean": "rm -rf dist docs/api coverage",
-    "prepublishOnly": "npm run clean && npm run build && npm test"
-  },
-  "peerDependencies": {
-    "kist": ">=0.1.58"
-  },
-  "dependencies": {
-    "eslint": "^10.8.0"
-  },
-  "devDependencies": {
-    "@eslint/js": "10.0.1",
-    "@types/jest": "30.0.0",
-    "@types/node": "26.1.2",
-    "@typescript-eslint/eslint-plugin": "8.65.0",
-    "@typescript-eslint/parser": "8.65.0",
-    "jest": "30.4.2",
-    "ts-jest": "^29.4.12",
-    "tsup": "^8.5.1",
-    "typedoc": "^0.28.20",
-    "typedoc-plugin-markdown": "^4.12.0",
-    "typescript": "^6.0.3",
-    "typescript-eslint": "8.65.0"
-  },
-  "files": [
-    "dist",
-    "README.md",
-    "LICENSE"
-  ],
-  "sideEffects": false,
-  "module": "./dist/index.mjs"
+    "keywords": [
+        "kist",
+        "kist-action",
+        "eslint",
+        "lint",
+        "linter",
+        "typescript",
+        "javascript"
+    ],
+    "author": "kist",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/getkist/kist-action-eslint.git"
+    },
+    "bugs": {
+        "url": "https://github.com/getkist/kist-action-eslint/issues"
+    },
+    "homepage": "https://github.com/getkist/kist-action-eslint#readme",
+    "engines": {
+        "node": ">=22.0.0",
+        "npm": ">=10.0.0"
+    },
+    "scripts": {
+        "build": "tsup",
+        "build:watch": "tsup --watch",
+        "test": "NODE_OPTIONS='--experimental-vm-modules' jest",
+        "test:watch": "NODE_OPTIONS='--experimental-vm-modules' jest --watch",
+        "test:coverage": "NODE_OPTIONS='--experimental-vm-modules' jest --coverage",
+        "test:unit": "NODE_OPTIONS='--experimental-vm-modules' jest --testPathPatterns='tst[\\/]unit[\\/]'",
+        "test:integration": "NODE_OPTIONS='--experimental-vm-modules' jest --testPathPatterns='tst[\\/]integration[\\/]'",
+        "lint": "eslint 'src/**/*.ts'",
+        "lint:fix": "eslint 'src/**/*.ts' --fix",
+        "format": "prettier --write 'src/**/*.ts'",
+        "docs": "typedoc",
+        "docs:watch": "typedoc --watch",
+        "clean": "rm -rf dist docs/api coverage",
+        "prepublishOnly": "npm run clean && npm run build && npm test"
+    },
+    "peerDependencies": {
+        "kist": ">=0.1.58"
+    },
+    "dependencies": {
+        "eslint": "^10.8.0"
+    },
+    "devDependencies": {
+        "@eslint/js": "10.0.1",
+        "@types/jest": "30.0.0",
+        "@types/node": "26.1.2",
+        "@typescript-eslint/eslint-plugin": "8.65.0",
+        "@typescript-eslint/parser": "8.65.0",
+        "jest": "30.4.2",
+        "ts-jest": "^29.4.12",
+        "tsup": "^8.5.1",
+        "typedoc": "^0.28.20",
+        "typedoc-plugin-markdown": "^4.12.0",
+        "typescript": "^6.0.3",
+        "typescript-eslint": "8.65.0"
+    },
+    "files": [
+        "dist",
+        "README.md",
+        "LICENSE"
+    ],
+    "sideEffects": false,
+    "module": "./dist/index.mjs",
+    "funding": [
+        {
+            "type": "github",
+            "url": "https://github.com/sponsors/scape-foundation"
+        }
+    ]
 }
